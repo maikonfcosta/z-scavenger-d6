@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Z-Scavenger PnP</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+    :root {
+      --primary: #d32f2f;
+      --border-dark: #000;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #FFF;
+      color: #000;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    
+    /* Layout para caber e PREENCHER exatamente em A4 (210mm x 297mm) */
+    .container {
+      width: 100%;
+      height: 277mm; 
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .glass {
+      background: #FFF;
+      border: 2px solid var(--border-dark);
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 0px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .header p {
+      margin: 0;
+      font-size: 13px;
+      color: #333;
+      font-weight: bold;
+    }
+    
+    /* STATUS PANEL */
+    .status-panel {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      width: 48%;
+      gap: 8px;
+    }
+    .status-label {
+      font-weight: 900;
+      width: 105px;
+      text-transform: uppercase;
+      font-size: 13px;
+      color: #000;
+    }
+    .tracker {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap; 
+      flex: 1;
+    }
+    .box, .circle {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #000;
+      background: #FFF;
+      display: inline-block;
+    }
+    .circle {
+      border-radius: 50%;
+    }
+    
+    .horda-panel {
+      width: 100%;
+      margin-top: 5px;
+      text-align: center;
+    }
+    .horda-panel h3 {
+      margin: 0 0 8px 0;
+      text-transform: uppercase;
+      font-size: 14px;
+      color: #000;
+      font-weight: 900;
+    }
+    .timeline {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      margin: 0 10px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #000;
+      z-index: 1;
+    }
+    .t-node {
+      width: 26px;
+      height: 26px;
+      border: 2px solid #000;
+      border-radius: 50%;
+      background: #FFF;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 900;
+      font-size: 12px;
+      color: #000;
+    }
+    
+    /* MAP AREA - Modificado para ocupar o resto da tela */
+    .map-area {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 1fr 1fr 1fr;
+      gap: 12px;
+      flex: 1; /* Faz a área do mapa esticar verticalmente */
+    }
+    .loc {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Aumentado espaçamento interno */
+      position: relative;
+      overflow: hidden;
+      padding: 12px 10px;
+      border-radius: 8px;
+      border: 2px solid var(--border-dark);
+      background-color: #FFF;
+    }
+    
+    /* IMAGENS DE FUNDO DOS LOCAIS COM 80% DE OPACIDADE (WATERMARK EFFECT) */
+    .loc::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.8;
+      z-index: 0;
+    }
+    /* Os textos ficam na frente da imagem com sombra branca para destacar */
+    .loc > * {
+      position: relative;
+      z-index: 2;
+      text-shadow: 1px 1px 3px #FFF, -1px -1px 3px #FFF, 0px 0px 5px #FFF;
+    }
+    
+    .loc-supermercado::before { background-image: url('img/loc_supermercado.jpg'); }
+    .loc-farmacia::before { background-image: url('img/loc_farmacia.jpg'); }
+    .loc-delegacia::before { background-image: url('img/loc_delegacia.jpg'); }
+    .loc-abrigo::before { background-image: url('img/loc_abrigo.jpg'); }
+    .loc-barricada::before { background-image: url('img/loc_barricada.jpg'); }
+    .loc-oficina::before { background-image: url('img/loc_oficina.jpg'); }
+
+    .loc h3 {
+      margin: 0;
+      text-transform: uppercase;
+      font-size: 18px; /* Aumentado */
+      color: #000;
+      font-weight: 900;
+    }
+    .loc .req {
+      font-weight: 900;
+      font-size: 12px; /* Aumentado */
+      background: rgba(255,255,255,0.85);
+      padding: 3px 8px; /* Aumentado */
+      border-radius: 4px;
+      color: #000;
+      border: 1px solid #000;
+      text-shadow: none;
+    }
+    .loc .reward {
+      font-size: 13px; /* Aumentado */
+      font-weight: 900;
+      color: #166534;
+      background: rgba(255,255,255,0.85);
+      padding: 3px 8px; /* Aumentado */
+      border-radius: 4px;
+      border: 1px solid #166534;
+      text-shadow: none;
+    }
+    .dice-slots {
+      display: flex;
+      gap: 8px; /* Aumentado */
+      margin-top: 5px;
+    }
+    .d-slot {
+      width: 36px; /* Aumentado */
+      height: 36px; /* Aumentado */
+      border: 2px dashed #000;
+      background: rgba(255,255,255,0.7);
+      border-radius: 5px;
+    }
+    
+    .oficina-loc {
+      grid-column: span 3;
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 15px;
+      align-items: center;
+      padding: 10px;
+    }
+    .oficina-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .oficina-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px; /* Aumentado */
+    }
+    .combo-box {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid #000;
+      padding: 10px; /* Aumentado */
+      font-size: 12px; /* Aumentado */
+      border-radius: 6px;
+      line-height: 1.4; /* Aumentado */
+      color: #000;
+      text-shadow: none;
+    }
+    .combo-box strong { color: #000; text-transform: uppercase; font-weight: 900; }
+    .car-repair {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid #000;
+      border-radius: 6px;
+      padding: 10px; /* Aumentado */
+      text-align: center;
+      text-shadow: none;
+    }
+    .car-repair h3 { margin: 0 0 8px 0; font-size: 13px; color: #000; text-transform: uppercase; font-weight: 900; }
+    .car-track {
+      display: flex;
+      gap: 6px; /* Aumentado */
+      justify-content: center;
+    }
+    .c-box {
+      width: 28px; /* Aumentado */
+      height: 28px; /* Aumentado */
+      border: 2px solid #000;
+      background: #FFF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 900;
+      font-size: 12px;
+      border-radius: 4px;
+      color: #000;
+    }
+    .c-fugir {
+      width: auto !important;
+      padding: 0 8px;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    /* TABLES AREA */
+    .tables-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .table-container {
+      padding: 0;
+      overflow: hidden;
+      border: 2px solid var(--border-dark);
+      border-radius: 8px;
+    }
+    .table-header {
+      background: #eee;
+      padding: 6px;
+      text-align: center;
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 12px;
+      border-bottom: 2px solid var(--border-dark);
+      color: var(--primary);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    th, td {
+      border-bottom: 1px solid #aaa;
+      padding: 6px;
+      background: #FFF;
+      color: #000;
+    }
+    th {
+      font-weight: 900;
+      text-align: center;
+      width: 45px;
+      color: var(--primary);
+      border-right: 1px solid #aaa;
+    }
+    tr:last-child th, tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Z-SCAVENGER</h1>
+    <p>DESTINO D6 - FOLHA DE JOGO</p>
+  </div>
+
+  <div class="status-panel glass">
+    <div class="status-row">
+      <div class="status-label">Vida</div>
+      <div class="tracker">
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="status-label">Infecção</div>
+      <div class="tracker">
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="status-label">Suprimentos</div>
+      <div class="tracker">
+        <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
+        <div class="box"></div><div class="box"></div><div class="box"></div><div class="box"></div>
+      </div>
+    </div>
+    <div class="status-row">
+      <div class="status-label">Munição</div>
+      <div class="tracker">
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+        <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+      </div>
+    </div>
+    <div class="status-row" style="width: 100%;">
+      <div class="status-label">Sucata</div>
+      <div class="tracker">
+        <div class="box"></div><div class="box"></div><div class="box"></div>
+        <div class="box"></div><div class="box"></div><div class="box"></div>
+      </div>
+    </div>
+    
+    <div class="horda-panel">
+      <h3>Trilha da Horda (Tempo)</h3>
+      <div class="timeline">
+        <div class="t-node">1</div><div class="t-node">2</div><div class="t-node">3</div>
+        <div class="t-node">4</div><div class="t-node">5</div><div class="t-node">6</div>
+        <div class="t-node">7</div><div class="t-node">8</div><div class="t-node">9</div>
+        <div class="t-node">10</div><div class="t-node">11</div><div class="t-node">12</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-area">
+    <div class="loc loc-supermercado">
+      <h3>Supermercado</h3>
+      <div class="req">DADOS 1, 3 OU 5 (ÍMPARES)</div>
+      <div class="reward">+1 Suprimento p/ dado</div>
+      <div class="dice-slots">
+        <div class="d-slot"></div><div class="d-slot"></div>
+      </div>
+    </div>
+    <div class="loc loc-farmacia">
+      <h3>Farmácia</h3>
+      <div class="req">DADOS 4 OU 5</div>
+      <div class="reward">+1 Vida p/ dado</div>
+      <div class="dice-slots">
+        <div class="d-slot"></div><div class="d-slot"></div>
+      </div>
+    </div>
+    <div class="loc loc-delegacia">
+      <h3>Delegacia</h3>
+      <div class="req">DADOS 2, 4 OU 6 (PARES)</div>
+      <div class="reward">+1 Munição p/ dado</div>
+      <div class="dice-slots">
+        <div class="d-slot"></div><div class="d-slot"></div>
+      </div>
+    </div>
+    <div class="loc loc-abrigo">
+      <h3>Abrigo</h3>
+      <div class="req">RECUPERAÇÃO SEGURA</div>
+      <div class="reward">(3-4):+1 Vid | (5-6):+2 Vid, -1 Inf</div>
+      <div class="dice-slots">
+        <div class="d-slot"></div>
+      </div>
+    </div>
+    <div class="loc loc-barricada" style="grid-column: span 2;">
+      <h3 style="color: var(--primary);">Barricada (Obrigatório)</h3>
+      <div class="req">DEFESA CONTRA HORDAS</div>
+      <div class="reward">Soma de Dados >= Ameaça Atual</div>
+      <div class="dice-slots">
+        <div class="d-slot"></div><div class="d-slot"></div>
+      </div>
+    </div>
+    
+    <div class="loc loc-oficina oficina-loc">
+      <div class="oficina-left">
+        <h3>Oficina</h3>
+        <div class="req">CUSTOS: SUCATAS E COMBOS</div>
+        <div class="dice-slots">
+          <div class="d-slot"></div><div class="d-slot"></div><div class="d-slot"></div>
+        </div>
+      </div>
+      <div class="oficina-right">
+        <div class="combo-box">
+          <strong>🔧 Combos (1x por partida):</strong><br>
+          • <strong>PAR:</strong> Gambiarra (+1 Sucata)<br>
+          • <strong>TRINCA:</strong> Peça Intacta (Avança 1 Conserto)<br>
+          • <strong>SEQUÊNCIA:</strong> Pólvora e Chumbo (+1 Munição)
+        </div>
+        <div class="car-repair">
+          <h3>Conserto do Veículo</h3>
+          <div class="car-track">
+            <div class="c-box">1</div><div class="c-box">2</div><div class="c-box">3</div>
+            <div class="c-box">4</div><div class="c-box">5</div><div class="c-box">6</div>
+            <div class="c-box c-fugir">FUGIR</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tables-area">
+    <div class="table-container">
+      <div class="table-header">Clima e Ameaça (Role 1D6)</div>
+      <table>
+        <tr><th>1-2</th><td><strong>Céu Limpo:</strong> (Ameaça 4) Dia tranquilo, sem bônus negativos.</td></tr>
+        <tr><th>3</th><td><strong>Nublado:</strong> (Ameaça 6) Visibilidade moderada.</td></tr>
+        <tr><th>4</th><td><strong>Chuva Fina:</strong> (Ameaça 7) Dados 3/4 no Abrigo não curam Vida.</td></tr>
+        <tr><th>5</th><td><strong>Chuva Forte:</strong> (Ameaça 8) Consertar o carro custa 1 Sucata extra (3).</td></tr>
+        <tr><th>6</th><td><strong>Névoa Densa:</strong> (Ameaça 10) Visibilidade Zero: Não gasta Munição na defesa.</td></tr>
+      </table>
+    </div>
+    <div class="table-container">
+      <div class="table-header">Encontros (Role 1D6)</div>
+      <table>
+        <tr><th>1</th><td><strong>Zumbis!</strong> Perca o recurso do local OU gaste 1 Munição.</td></tr>
+        <tr><th>2</th><td><strong>Infecção:</strong> Aumente +1 de Infecção na sua barra.</td></tr>
+        <tr><th>3</th><td><strong>Caminho Seguro:</strong> Nada acontece de especial.</td></tr>
+        <tr><th>4</th><td><strong>Achado Útil:</strong> Encontrou materiais valiosos! Ganhe +2 Sucatas.</td></tr>
+        <tr><th>5</th><td><strong>Mochila:</strong> Um sobrevivente deixou para trás! Ganhe +1 Sup.</td></tr>
+        <tr><th>6</th><td><strong>Militar!</strong> Jackpot! Ganhe +1 Munição e +1 Suprimento extras.</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

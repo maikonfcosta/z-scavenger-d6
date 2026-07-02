@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/jpeg" href="img/favicon.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z-Scavenger: Destino D6</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;600;800&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --infection: #7cb342;
+      --supply: #ffb300;
+      --scrap: #9e9e9e;
+      --bg-glass: rgba(15, 15, 18, 0.75);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --text-main: #f0f0f0;
+      --font-title: 'Special Elite', cursive;
+      --font-ui: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    
+    body {
+      background-color: #050505;
+      background-image: url('img/bg_apocalypse.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      font-family: var(--font-ui);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at center, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .glass {
+      background: var(--bg-glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-glass);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      padding: 15px;
+    }
+
+    .header-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .title-box {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .title-box h1 {
+      font-family: 'Creepster', cursive;
+      font-size: 2.8rem;
+      color: var(--primary);
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+      letter-spacing: 3px;
+    }
+    .title-box p {
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      color: #aaa;
+      letter-spacing: 1px;
+    }
+
+    .status-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .status-label {
+      width: 120px;
+      font-family: var(--font-title);
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ccc;
+    }
+    
+    .tracker {
+      display: flex;
+      gap: 5px;
+    }
+
+    .tracker-icon {
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.2);
+      transition: all 0.2s ease;
+      filter: drop-shadow(0px 0px 2px rgba(0,0,0,0.5));
+    }
+    .tracker-icon:hover { transform: scale(1.15); }
+    
+    .tracker.vida .tracker-icon.active { color: var(--primary); filter: drop-shadow(0px 0px 5px var(--primary)); }
+    .tracker.infeccao .tracker-icon.active { color: var(--infection); filter: drop-shadow(0px 0px 5px var(--infection)); }
+    .tracker.suprimentos .tracker-icon.active { color: var(--supply); filter: drop-shadow(0px 0px 5px var(--supply)); }
+    .tracker.municao .tracker-icon.active { color: #f39c12; filter: drop-shadow(0px 0px 5px #f39c12); }
+    .tracker.sucata .tracker-icon.active { color: var(--scrap); filter: drop-shadow(0px 0px 5px var(--scrap)); }
+
+    .horda-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .horda-panel h2 {
+      font-family: var(--font-title);
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    .timeline {
+      display: flex;
+      gap: 8px;
+      position: relative;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    .t-node {
+      position: relative;
+      z-index: 1;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: #111;
+      border: 2px solid #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .t-node.active {
+      background: var(--primary);
+      border-color: #fff;
+      color: #fff;
+      box-shadow: 0 0 10px var(--primary);
+    }
+    .t-node:last-child {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .t-node:last-child.active {
+      background: #800000;
+    }
+
+    .map-area {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .loc {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+    .loc:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .loc-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    .loc-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .loc-req {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #aaa;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .loc-reward {
+      font-size: 0.8rem;
+      color: #4ade80;
+      font-weight: 600;
+    }
+    
+    .dice-slots {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .d-slot {
+      width: 44px; height: 44px;
+      background: rgba(0,0,0,0.6);
+      border: 2px dashed #666;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .d-slot.occupied {
+      background: linear-gradient(135deg, #fff, #ddd);
+      color: #000;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 900;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.8);
+    }
+
+    .loc.oficina {
+      grid-column: span 2;
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: stretch;
+      padding: 10px;
+    }
+    .oficina-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 40%;
+    }
+    .oficina-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 55%;
+    }
+    .combo-box {
+      background: rgba(0,0,0,0.4);
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      text-align: left;
+      line-height: 1.4;
+      color: #ccc;
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .combo-box strong { color: #fff; font-family: var(--font-title); font-size: 0.85rem;}
+    
+    .car-repair {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.4);
+      padding: 10px;
+      border-radius: 8px;
+      width: 100%;
+    }
+    .car-track {
+      display: flex;
+      gap: 5px;
+    }
+    .c-box {
+      width: 30px; height: 30px;
+      border: 2px solid #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      background: #111;
+      border-radius: 4px;
+    }
+    .c-box.active {
+      background: #4ade80;
+      color: #000;
+      border-color: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+    .c-box.fugir {
+      width: auto;
+      padding: 0 10px;
+      border-color: #3b82f6;
+      color: #3b82f6;
+    }
+    .c-box.fugir.active {
+      background: #3b82f6;
+      color: #fff;
+      box-shadow: 0 0 8px #3b82f6;
+    }
+
+    .footer-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .table-container {
+      padding: 0;
+      overflow: hidden;
+    }
+    .table-header {
+      background: rgba(255,255,255,0.1);
+      padding: 10px;
+      text-align: center;
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      border-bottom: 1px solid var(--border-glass);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th, td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    th {
+      font-family: var(--font-title);
+      color: var(--primary);
+      text-align: center;
+      width: 60px;
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+    tr:last-child th, tr:last-child td { border-bottom: none; }
+
+    .roller-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 15px;
+      z-index: 100;
+      width: 400px;
+    }
+    .btn-roll {
+      flex: 1;
+      border: none;
+      padding: 12px 24px;
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn-roll:active {
+      transform: scale(0.95);
+    }
+    .btn-action {
+      background: #eee;
+      color: #111;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+    }
+    .btn-action:hover {
+      background: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-event {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+    }
+    .btn-event:hover {
+      background: #f44336;
+      transform: translateY(-2px);
+    }
+    .btn-escape {
+      background: #4ade80;
+      color: #000;
+      box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+    }
+    .btn-escape:hover {
+      background: #22c55e;
+      transform: translateY(-2px);
+    }
+    .dice-result {
+      display: flex;
+      gap: 12px;
+      background: rgba(0,0,0,0.8);
+      padding: 15px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      min-width: 250px;
+      min-height: 76px;
+      justify-content: center;
+      align-items: center;
+      color: #777;
+    }
+    .die-ui {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, #fff, #ddd);
+      color: #000;
+      font-family: 'Inter', sans-serif;
+      font-weight: 900;
+      font-size: 1.6rem;
+      border-radius: 8px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.6);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .die-ui:hover {
+      transform: translateY(-3px);
+    }
+    .die-ui.selected {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 15px rgba(211,47,47,0.6);
+    }
+    .die-ui.used {
+      opacity: 0.2;
+      pointer-events: none;
+      filter: grayscale(100%);
+    }
+    .die-ui.red {
+      background: linear-gradient(135deg, #f44336, #800000);
+      color: #fff;
+    }
+    .die-ui.green {
+      background: linear-gradient(135deg, #4ade80, #166534);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- START SCREEN OVERLAY -->
+  <div id="start-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:#050505; background-image:url('img/bg_apocalypse.jpg'); background-size:cover; background-position:center; z-index:10000; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <div style="background:rgba(0,0,0,0.85); padding:50px; border-radius:20px; text-align:center; border:2px solid var(--primary); box-shadow: 0 0 50px rgba(211,47,47,0.5); backdrop-filter: blur(5px);">
+      <img src="img/logo.jpg" alt="Z-Scavenger Logo" style="max-width: 200px; border-radius: 15px; box-shadow: 0 0 20px var(--primary); margin-bottom: 20px; border: 2px solid var(--primary);">
+      <h1 style="font-family:'Creepster', cursive; font-size:4rem; color:var(--primary); margin-bottom:10px; letter-spacing:5px; text-shadow: 2px 2px 10px black;">Z-SCAVENGER</h1>
+      <p style="font-family:var(--font-title); font-size:1.5rem; color:#aaa; margin-bottom:40px;">DESTINO D6</p>
+      <button onclick="startGame()" class="btn-roll btn-event" style="font-size:1.5rem; padding:15px 40px; margin: 0 auto; width: 100%;">INICIAR JOGO</button>
+    </div>
+  </div>
+
+  <!-- RULES MODAL -->
+  <div id="rules-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; justify-content:center; align-items:center; backdrop-filter: blur(5px);">
+    <div class="glass" style="width:95%; max-width:900px; height:90%; padding:20px; display:flex; flex-direction:column; position:relative;">
+      <button onclick="closeRules()" style="position:absolute; top:-15px; right:-15px; width:45px; height:45px; border-radius:50%; background:var(--primary); color:#fff; border:2px solid #000; font-weight:bold; font-size:1.4rem; cursor:pointer; z-index:10002; display:flex; justify-content:center; align-items:center;">X</button>
+      <iframe src="docs/manual_de_regras.html" style="width:100%; height:100%; border:none; background:#fff; border-radius:8px;"></iframe>
+    </div>
+  </div>
+
+  <!-- MODAL Z-SCAVENGER -->
+  <div id="z-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+    <div id="z-modal-box" class="glass" style="max-width:450px; width:90%; padding:30px; border:2px solid var(--primary); box-shadow: 0 0 40px rgba(211,47,47,0.4); text-align:center; position:relative; display:flex; flex-direction:column; align-items:center;">
+      <h3 id="z-modal-title" style="font-family:'Creepster', cursive; color:var(--primary); font-size:2.4rem; margin-bottom:15px; letter-spacing:2px; text-shadow:2px 2px 5px black; text-transform:uppercase;">ATENÇÃO</h3>
+      <p id="z-modal-msg" style="font-size:1.15rem; line-height:1.6; margin-bottom:25px; color:#ddd; font-weight:600;"></p>
+      
+      <input type="number" id="z-modal-input" style="display:none; width:100%; padding:10px; margin-bottom:20px; background:rgba(0,0,0,0.5); border:1px solid var(--primary); color:white; font-size:1.5rem; text-align:center; border-radius:5px;" value="0">
+      
+      <div id="z-modal-buttons" style="display:flex; justify-content:center; gap:15px; width:100%;">
+         <button id="z-btn-ok" class="btn-roll btn-event" style="flex:1;">OK</button>
+         <button id="z-btn-cancel" class="btn-roll btn-action" style="flex:1; display:none;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bg-music" loop>
+    <source src="audio/theme.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="container">
+    <div style="position:absolute; top:10px; right:10px; display:flex; gap:10px; z-index: 10;">
+      <button id="btn-mute" class="btn-roll btn-action" onclick="toggleMute()" style="width:auto; padding: 8px 16px; font-size:0.9rem; background: #222; color: white; border: 1px solid #555; margin:0;">🔊 Som</button>
+      <button class="btn-roll btn-action" onclick="resetGame()" style="width:auto; padding: 8px 16px; font-size:0.9rem; background: #222; color: white; border: 1px solid #555; margin:0;">🔄 Reiniciar</button>
+      <button class="btn-roll btn-action" onclick="openRules()" style="width:auto; padding: 8px 16px; font-size:0.9rem; margin:0;">📖 Regras</button>
+    </div>
+    
+    <div class="title-box">
+      <h1>Z-SCAVENGER</h1>
+      <p>DESTINO D6</p>
+    </div>
+
+    <!-- HEADER AREA -->
+    <div class="header-area">
+      <!-- Status -->
+      <div class="status-panel glass">
+        <!-- Vida -->
+        <div class="status-row">
+          <div class="status-label">Vida</div>
+          <div class="tracker vida" id="trk-vida">
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          </div>
+        </div>
+        <!-- Infecção -->
+        <div class="status-row">
+          <div class="status-label">Infecção</div>
+          <div class="tracker infeccao" id="trk-inf">
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+            <svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 2C8.91 2 6 4.91 6 8.5V13a5 5 0 0 0 2 3.83V20h8v-3.17A5 5 0 0 0 18 13V8.5C18 4.91 15.09 2 12.5 2z"/></svg>
+          </div>
+        </div>
+        <!-- Suprimentos -->
+        <div class="status-row">
+          <div class="status-label">Suprimentos</div>
+          <div class="tracker suprimentos" id="trk-sup">
+            <script>
+              const boxSvg = `<svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`;
+              for(let i=0; i<8; i++) document.write(boxSvg);
+            </script>
+          </div>
+        </div>
+        <!-- Munição -->
+        <div class="status-row">
+          <div class="status-label">Munição</div>
+          <div class="tracker municao" id="trk-mun">
+            <script>
+              const ammoSvg = `<svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`;
+              for(let i=0; i<6; i++) document.write(ammoSvg);
+            </script>
+          </div>
+        </div>
+        <!-- Sucata -->
+        <div class="status-row">
+          <div class="status-label">Sucata</div>
+          <div class="tracker sucata" id="trk-suc">
+            <script>
+              const gearSvg = `<svg class="tracker-icon" onclick="markTracker(this)" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>`;
+              for(let i=0; i<6; i++) document.write(gearSvg);
+            </script>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trilha da Horda -->
+      <div class="horda-panel glass">
+        <h2>Trilha da Horda (Tempo)</h2>
+        <div class="timeline" id="trk-horda">
+          <script>
+            for(let i=1; i<=12; i++) document.write(`<div class="t-node" onclick="markTracker(this)">${i}</div>`);
+          </script>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP AREA -->
+    <div class="map-area">
+      
+      <!-- Supermercado -->
+      <div class="loc glass" data-loc="supermercado">
+        <img src="img/loc_supermercado.jpg" class="loc-img" alt="Supermercado">
+        <div class="loc-title">Supermercado</div>
+        <div class="loc-req">DADOS 1, 3 OU 5 (ÍMPARES)</div>
+        <div class="loc-reward">+1 Suprimento p/ dado</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+
+      <!-- Farmácia -->
+      <div class="loc glass" data-loc="farmacia">
+        <img src="img/loc_farmacia.jpg" class="loc-img" alt="Farmácia">
+        <div class="loc-title">Farmácia</div>
+        <div class="loc-req">DADOS 4 OU 5</div>
+        <div class="loc-reward">+1 Vida p/ dado</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+
+      <!-- Delegacia -->
+      <div class="loc glass" data-loc="delegacia">
+        <img src="img/loc_delegacia.jpg" class="loc-img" alt="Delegacia">
+        <div class="loc-title">Delegacia</div>
+        <div class="loc-req">DADOS 2, 4 OU 6 (PARES)</div>
+        <div class="loc-reward">+1 Munição p/ dado</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+
+      <!-- Abrigo -->
+      <div class="loc glass" data-loc="abrigo">
+        <img src="img/loc_abrigo.jpg" class="loc-img" alt="Abrigo">
+        <div class="loc-title">Abrigo</div>
+        <div class="loc-req">RECUPERAÇÃO SEGURA</div>
+        <div class="loc-reward">(3-4): +1 Vida | (5-6): +2 Vida, -1 Inf</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+
+      <!-- Barricada -->
+      <div class="loc glass" data-loc="barricada">
+        <img src="img/loc_barricada.jpg" class="loc-img" alt="Barricada">
+        <div class="loc-title" style="color: var(--primary);">Barricada (Obrigatório)</div>
+        <div class="loc-req">DEFESA CONTRA HORDAS</div>
+        <div class="loc-reward">Soma de Dados >= Ameaça Atual</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+
+      <!-- Oficina e Conserto -->
+      <div class="loc oficina glass" data-loc="oficina">
+        <div class="oficina-left">
+          <img src="img/loc_oficina.jpg" class="loc-img" alt="Oficina">
+          <div class="loc-title">Oficina</div>
+          <div class="loc-req">CUSTOS: SUCATAS E COMBOS</div>
+          <div class="dice-slots">
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+          </div>
+        </div>
+        
+        <div class="oficina-right">
+          <div class="combo-box">
+            <strong>🔧 COMBOS (1x por partida):</strong><br><br>
+            • <strong>PAR (2 dados iguais):</strong> <em>Gambiarra</em> (+1 Sucata)<br>
+            • <strong>TRINCA (3 dados iguais):</strong> <em>Peça Intacta</em> (Avança 1 Conserto)<br>
+            • <strong>SEQUÊNCIA (ex: 1-2-3):</strong> <em>Pólvora e Chumbo</em> (+1 Munição)
+          </div>
+          <div class="car-repair">
+            <div class="loc-title" style="font-size: 0.9rem;">Conserto do Veículo</div>
+            <div class="car-track" id="trk-carro">
+              <div class="c-box" onclick="markTracker(this)">1</div>
+              <div class="c-box" onclick="markTracker(this)">2</div>
+              <div class="c-box" onclick="markTracker(this)">3</div>
+              <div class="c-box" onclick="markTracker(this)">4</div>
+              <div class="c-box" onclick="markTracker(this)">5</div>
+              <div class="c-box" onclick="markTracker(this)">6</div>
+              <div class="c-box fugir" onclick="markTracker(this)">FUGIR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER AREA -->
+    <div class="footer-area">
+      
+      <div class="table-container glass">
+        <div class="table-header">TABELA DE CLIMA E AMEAÇA (Role 1D6)</div>
+        <table>
+          <tr><th>1 - 2</th><td><strong>Céu Limpo:</strong> (Ameaça 4/5) Dia tranquilo, sem bônus negativos.</td></tr>
+          <tr><th>3</th><td><strong>Nublado:</strong> (Ameaça 6) Visibilidade moderada.</td></tr>
+          <tr><th>4</th><td><strong>Chuva Fina:</strong> (Ameaça 7) Dados 3/4 no Abrigo não curam Vida.</td></tr>
+          <tr><th>5</th><td><strong>Chuva Forte:</strong> (Ameaça 8) Consertar o carro custa 1 Sucata extra (3).</td></tr>
+          <tr><th>6</th><td><strong>Névoa Densa:</strong> (Ameaça 10) Visibilidade Zero: Não gasta Munição na defesa.</td></tr>
+        </table>
+      </div>
+
+      <div class="table-container glass">
+        <div class="table-header">TABELA DE ENCONTROS (Role 1D6)</div>
+        <table>
+          <tr><th>1</th><td><strong>Zumbis Bloqueiam Saída!</strong> Perca o recurso do local OU gaste 1 Munição.</td></tr>
+          <tr><th>2</th><td><strong>Risco de Infecção:</strong> Aumente +1 de Infecção na sua barra.</td></tr>
+          <tr><th>3</th><td><strong>Caminho Seguro:</strong> Nada acontece de especial.</td></tr>
+          <tr><th>4</th><td><strong>Achado Útil:</strong> Encontrou materiais valiosos! Ganhe +2 Sucatas.</td></tr>
+          <tr><th>5</th><td><strong>Mochila Abandonada:</strong> Um sobrevivente deixou para trás! Ganhe +1 Suprimento.</td></tr>
+          <tr><th>6</th><td><strong>Estoque Militar!</strong> Jackpot! Ganhe +1 Munição e +1 Suprimento extras.</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING DICE ROLLER -->
+  <div class="roller-container">
+    <!-- Action Panel -->
+    <div style="display: flex; gap: 10px; align-items: stretch; width: 100%;">
+      <div class="dice-result" id="dOut" style="flex: 1; padding: 10px;">- - - - -</div>
+      <button class="btn-roll btn-action" id="btn-roll-action" onclick="rollActionDice()" style="flex: 0.5;">Ação (5)</button>
+    </div>
+    
+    <!-- Event Panel -->
+    <div style="display: flex; gap: 10px; align-items: stretch; width: 100%; justify-content: flex-end;">
+      <div class="dice-result" id="dEvent" style="min-width: 76px; min-height: 76px; padding: 5px; flex: none; border-color: var(--primary); box-shadow: 0 0 15px rgba(211,47,47,0.3);">
+        -
+      </div>
+    </div>
+
+    <!-- Escape Panel -->
+    <div id="escape-panel" style="display: none; gap: 10px; align-items: stretch; width: 100%;">
+      <div class="dice-result" id="dEscape" style="flex: 1; min-height: 50px; padding: 5px;">FUGIR!</div>
+      <button class="btn-roll btn-escape" onclick="rollEscape()">Tentar Fuga</button>
+    </div>
+  </div>
+
+  <script>
+    let isMuted = false;
+    
+    function toggleMute() {
+      const audio = document.getElementById('bg-music');
+      isMuted = !isMuted;
+      audio.muted = isMuted;
+      document.getElementById('btn-mute').innerText = isMuted ? "🔇 Mudo" : "🔊 Som";
+    }
+
+    async function startGame() {
+      document.getElementById('start-screen').style.display = 'none';
+      
+      const audio = document.getElementById('bg-music');
+      audio.volume = 0.35; // Volume ambiente agradável
+      audio.play().catch(e => console.log('Música não encontrada ou autoplay bloqueado.'));
+      
+      await runTutorial();
+    }
+    
+    async function runTutorial() {
+      await customAlert("BEM-VINDO AO Z-SCAVENGER!", "Você é um sobrevivente solitário. Seu objetivo é consertar o carro na Oficina (até o nível 6) e FUGIR da cidade antes que a Horda te alcance no dia 12.");
+      await customAlert("COMO JOGAR?", "1. Todo dia começa com a previsão do Tempo e Ameaça (a força do ataque Zumbi na Barricada).\n2. Você consome 1 Suprimento por dia, cuidado para não morrer de fome!\n3. Role seus 5 Dados de Ação (botão 'Ação (5)') e aloque-os no mapa para coletar recursos, se curar e defender o abrigo.");
+      await customAlert("USANDO OS DADOS", "Clique em um dado rolado para selecioná-lo (ele fica vermelho) e depois clique em um espaço de dado [D] no mapa para alocá-lo.\n\nIMPORTANTE: Use os ícones do painel superior para marcar manualmente sua Vida, Suprimentos, Munição e Sucatas à medida que for ganhando ou perdendo (como numa folha de papel).");
+      await customAlert("A BARRICADA!", "Nunca se esqueça da Barricada! Você PRECISA alocar dados lá cuja soma seja Maior ou Igual à Ameaça do dia, senão a defesa cai e você perderá 1 Vida e 1 Suprimento.\n\nAgora, vamos ver como está o Clima no seu primeiro dia de sobrevivência...", "Iniciar 1º Dia");
+      rollWeather();
+    }
+
+    function resetGame() {
+      if(confirm("Tem certeza que deseja abandonar este sobrevivente e reiniciar a partida? Toda a progressão será perdida!")) {
+        window.location.reload();
+      }
+    }
+
+    function openRules() {
+      document.getElementById('rules-modal').style.display = 'flex';
+    }
+    function closeRules() {
+      document.getElementById('rules-modal').style.display = 'none';
+    }
+
+    const WEATHERS = {
+      1: { text: "Céu Limpo", threat: 4 },
+      2: { text: "Sol Forte", threat: 5 },
+      3: { text: "Nublado", threat: 6 },
+      4: { text: "Chuva Fina", threat: 7 },
+      5: { text: "Chuva Forte", threat: 8 },
+      6: { text: "Névoa Densa", threat: 10 }
+    };
+
+    let gameState = { vida: 5, inf: 0, sup: 2, mun: 0, suc: 0, carro: 0, horda: 1, weather: 1, threat: 4, diceAllocated: 0 };
+    const idMap = { 'vida': 'trk-vida', 'inf': 'trk-inf', 'sup': 'trk-sup', 'mun': 'trk-mun', 'suc': 'trk-suc', 'carro': 'trk-carro', 'horda': 'trk-horda' };
+
+    // --- CUSTOM MODAL SYSTEM ---
+    let modalQueue = [];
+    let modalActive = false;
+
+    function showModal(title, msg, type = 'alert', defaultVal = '', okText = 'Entendido', cancelText = 'Cancelar') {
+        return new Promise(resolve => {
+            const executeModal = () => {
+                modalActive = true;
+                document.getElementById('z-modal-overlay').style.display = 'flex';
+                document.getElementById('z-modal-title').innerText = title;
+                document.getElementById('z-modal-msg').innerHTML = msg.replace(/\n/g, '<br>');
+                
+                const btnOk = document.getElementById('z-btn-ok');
+                const btnCancel = document.getElementById('z-btn-cancel');
+                const inputField = document.getElementById('z-modal-input');
+                
+                let newOk = btnOk.cloneNode(true);
+                let newCancel = btnCancel.cloneNode(true);
+                btnOk.parentNode.replaceChild(newOk, btnOk);
+                btnCancel.parentNode.replaceChild(newCancel, btnCancel);
+                
+                if (type === 'alert') {
+                    newCancel.style.display = 'none';
+                    inputField.style.display = 'none';
+                    newOk.innerText = okText;
+                    newOk.onclick = () => { closeModal(); resolve(true); };
+                } else if (type === 'confirm') {
+                    newCancel.style.display = 'block';
+                    inputField.style.display = 'none';
+                    newOk.innerText = okText;
+                    newCancel.innerText = cancelText;
+                    newOk.onclick = () => { closeModal(); resolve(true); };
+                    newCancel.onclick = () => { closeModal(); resolve(false); };
+                } else if (type === 'prompt') {
+                    newCancel.style.display = 'block';
+                    inputField.style.display = 'block';
+                    inputField.value = defaultVal;
+                    newOk.innerText = okText;
+                    newCancel.innerText = cancelText;
+                    newOk.onclick = () => { closeModal(); resolve(inputField.value); };
+                    newCancel.onclick = () => { closeModal(); resolve(null); };
+                }
+            };
+
+            if (modalActive) modalQueue.push(executeModal);
+            else executeModal();
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('z-modal-overlay').style.display = 'none';
+        modalActive = false;
+        if (modalQueue.length > 0) {
+            let nextModal = modalQueue.shift();
+            setTimeout(nextModal, 150);
+        }
+    }
+
+    async function customAlert(title, msg, okText="Entendido") { return await showModal(title, msg, 'alert', '', okText); }
+    async function customConfirm(title, msg, okText="Sim", cancelText="Não") { return await showModal(title, msg, 'confirm', '', okText, cancelText); }
+    async function customPrompt(title, msg, defaultVal, okText="Confirmar", cancelText="Cancelar") { return await showModal(title, msg, 'prompt', defaultVal, okText, cancelText); }
+
+    // --- GAME ENGINE ---
+
+    window.onload = () => {
+      syncUI();
+    };
+
+    function syncUI() {
+      Object.keys(idMap).forEach(key => setTracker(idMap[key], gameState[key]));
+    }
+
+    function setTracker(id, amount) {
+      const container = document.getElementById(id);
+      if(!container) return;
+      const elements = Array.from(container.querySelectorAll('.tracker-icon, .t-node, .c-box'));
+      elements.forEach((el, i) => {
+        if (i < amount) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+    }
+
+    async function changeStat(stat, delta) {
+      gameState[stat] += delta;
+      if (stat === 'vida') gameState.vida = Math.max(0, Math.min(6, gameState.vida));
+      if (stat === 'inf') gameState.inf = Math.max(0, Math.min(6, gameState.inf));
+      if (stat === 'sup') gameState.sup = Math.max(0, Math.min(8, gameState.sup));
+      if (stat === 'mun') gameState.mun = Math.max(0, Math.min(6, gameState.mun));
+      if (stat === 'suc') gameState.suc = Math.max(0, Math.min(6, gameState.suc));
+      
+      setTracker(idMap[stat], gameState[stat]);
+      
+      if (stat === 'vida' && gameState.vida <= 0) await customAlert("FIM DA LINHA", "SUA VIDA CHEGOU A ZERO! VOCÊ FOI DEVORADO.");
+      if (stat === 'inf' && gameState.inf >= 6) await customAlert("TRANSFORMAÇÃO", "INFECÇÃO MÁXIMA ALCANÇADA! VOCÊ AGORA É UM DELES.");
+    }
+
+    function markTracker(element) {
+      const parent = element.parentElement;
+      const elements = Array.from(parent.querySelectorAll('.tracker-icon, .t-node, .c-box'));
+      const index = elements.indexOf(element);
+      
+      const isLastActive = element.classList.contains('active') && 
+                           (index === elements.length - 1 || !elements[index+1].classList.contains('active'));
+      
+      let amount = isLastActive ? index : index + 1;
+      
+      let statKey = Object.keys(idMap).find(key => idMap[key] === parent.id);
+      if(statKey) {
+          gameState[statKey] = amount;
+          syncUI();
+      }
+      
+      if(parent.id === 'trk-carro') {
+         const fugirBox = document.querySelector('.c-box.fugir');
+         const escapePanel = document.getElementById('escape-panel');
+         if (fugirBox && escapePanel) {
+           escapePanel.style.display = fugirBox.classList.contains('active') ? 'flex' : 'none';
+         }
+      }
+    }
+
+    let selectedDie = null;
+
+    function selectDie(dieId) {
+      let die = document.getElementById(dieId);
+      if(die.classList.contains('used')) return;
+      
+      if (selectedDie === die) {
+        die.classList.remove('selected');
+        selectedDie = null;
+      } else {
+        if(selectedDie) selectedDie.classList.remove('selected');
+        die.classList.add('selected');
+        selectedDie = die;
+      }
+    }
+
+    async function clickSlot(slot) {
+      if (slot.classList.contains('occupied')) return;
+      if (!selectedDie) return;
+
+      let locDiv = slot.closest('.loc');
+      let locType = locDiv.dataset.loc;
+      let val = parseInt(selectedDie.innerText);
+      
+      if (locType === 'supermercado' && ![1,3,5].includes(val)) { await customAlert("AÇÃO INVÁLIDA", "O Supermercado exige dados ÍMPARES (1, 3, 5)."); return; }
+      if (locType === 'farmacia' && ![4,5].includes(val)) { await customAlert("AÇÃO INVÁLIDA", "A Farmácia só aceita dados 4 ou 5."); return; }
+      if (locType === 'delegacia' && ![2,4,6].includes(val)) { await customAlert("AÇÃO INVÁLIDA", "A Delegacia exige dados PARES (2, 4, 6)."); return; }
+      if (locType === 'abrigo' && ![3,4,5,6].includes(val)) { await customAlert("AÇÃO INVÁLIDA", "O Abrigo exige dados 3, 4, 5 ou 6."); return; }
+      
+      slot.innerHTML = selectedDie.innerHTML;
+      slot.dataset.val = val;
+      slot.classList.add('occupied');
+      
+      selectedDie.classList.remove('selected');
+      selectedDie.classList.add('used');
+      selectedDie = null;
+      gameState.diceAllocated++;
+
+      if (['supermercado', 'farmacia', 'delegacia'].includes(locType)) {
+         let res = '';
+         if(locType === 'supermercado') { res = 'sup'; await changeStat('sup', 1); }
+         else if(locType === 'farmacia') { res = 'vida'; await changeStat('vida', 1); }
+         else if(locType === 'delegacia') { res = 'mun'; await changeStat('mun', 1); }
+         
+         triggerEncounter(res);
+      } else if (locType === 'abrigo') {
+         if(val === 3 || val === 4) {
+            if(gameState.weather !== 4) { await changeStat('vida', 1); await customAlert("CURA SEGURA", "O Abrigo te deu um alívio temporário.\n+1 Vida"); }
+            else await customAlert("TEMPO RUIM", "A Chuva Fina piorou tudo...\nDados 3 e 4 no Abrigo não curam Vida hoje.");
+         } else {
+            await changeStat('vida', 2);
+            await changeStat('inf', -1);
+            await customAlert("DESCANSO PROFUNDO", "Você encontrou remédios e bandagens no Abrigo!\n+2 Vida e -1 Infecção");
+         }
+         if(gameState.diceAllocated === 5) setTimeout(endRound, 500);
+      } else {
+         if(gameState.diceAllocated === 5) setTimeout(endRound, 500);
+      }
+    }
+
+    function rollActionDice() {
+      const btn = document.getElementById('btn-roll-action');
+      btn.disabled = true;
+      const dOut = document.getElementById('dOut');
+      selectedDie = null;
+      
+      document.querySelectorAll('.d-slot').forEach(slot => {
+        slot.classList.remove('occupied');
+        slot.innerHTML = 'D';
+        delete slot.dataset.val;
+      });
+      gameState.diceAllocated = 0;
+
+      let rolls = 0;
+      let interval = setInterval(() => {
+        dOut.innerHTML = '';
+        for(let i = 0; i < 5; i++) {
+          let val = Math.floor(Math.random() * 6) + 1;
+          dOut.innerHTML += `<div class="die-ui">${val}</div>`;
+        }
+        rolls++;
+        if(rolls > 10) {
+          clearInterval(interval);
+          dOut.innerHTML = '';
+          for(let i = 0; i < 5; i++) {
+            let finalVal = Math.floor(Math.random() * 6) + 1;
+            dOut.innerHTML += `<div class="die-ui" id="die-${i}" onclick="selectDie('die-${i}')">${finalVal}</div>`;
+          }
+        }
+      }, 50);
+    }
+
+    function rollWeather() {
+      const dEvent = document.getElementById('dEvent');
+      let rolls = 0;
+      let interval = setInterval(() => {
+        dEvent.innerHTML = `<div class="die-ui red">${Math.floor(Math.random() * 6) + 1}</div>`;
+        rolls++;
+        if(rolls > 10) {
+          clearInterval(interval);
+          let w = Math.floor(Math.random() * 6) + 1;
+          if(w === 1 || w === 2) w = (Math.random() > 0.5) ? 1 : 2; 
+          dEvent.innerHTML = `<div class="die-ui red">${w}</div>`;
+          gameState.weather = w;
+          gameState.threat = WEATHERS[w].threat;
+          setTimeout(async () => {
+             await customAlert("NOVO DIA CLAREIA", `O sol revela o clima:\n\n[ ${WEATHERS[w].text} ]\n\nAmeaça da Horda: ${gameState.threat}`);
+             
+             if (gameState.sup > 0) {
+                 await changeStat('sup', -1);
+                 await customAlert("CONSUMO DIÁRIO", "Você consumiu 1 Suprimento para se manter de pé hoje (-1 Sup).");
+             } else {
+                 await changeStat('vida', -1);
+                 await customAlert("FOME!", "Você não tem Suprimentos para o consumo diário!\nVocê perdeu 1 Vida por inanição.");
+             }
+             
+             document.getElementById('btn-roll-action').disabled = false;
+          }, 100);
+        }
+      }, 50);
+    }
+
+    function triggerEncounter(resourceName) {
+      const dEvent = document.getElementById('dEvent');
+      let rolls = 0;
+      let interval = setInterval(() => {
+        dEvent.innerHTML = `<div class="die-ui red">${Math.floor(Math.random() * 6) + 1}</div>`;
+        rolls++;
+        if(rolls > 10) {
+          clearInterval(interval);
+          let val = Math.floor(Math.random() * 6) + 1;
+          dEvent.innerHTML = `<div class="die-ui red">${val}</div>`;
+          setTimeout(() => resolveEncounter(val, resourceName), 100);
+        }
+      }, 50);
+    }
+
+    async function resolveEncounter(val, res) {
+      if(val === 1) {
+         let ans = await customConfirm("ZUMBIS NA SAÍDA!", "Os mortos-vivos bloquearam a porta!\nO que você fará?", "Largar o Recurso", "Atirar (-1 Munição)");
+         if(ans) {
+            await changeStat(res, -1);
+         } else {
+            if(gameState.mun > 0) { await changeStat('mun', -1); }
+            else { await customAlert("ARMAS VAZIAS", "Você puxou o gatilho, mas... *Click*. Sem munição!\nO recurso caiu no chão enquanto você corria."); await changeStat(res, -1); }
+         }
+      }
+      else if(val === 2) { await customAlert("CUIDADO!", "Você sofreu um corte em um ferro enferrujado... ou pior.\n+1 Infecção"); await changeStat('inf', 1); }
+      else if(val === 3) { await customAlert("TUDO QUIETO", "O local está vazio e o caminho é seguro... por enquanto."); }
+      else if(val === 4) { await customAlert("ACHADO ÚTIL", "Sorte grande! Você achou peças utilizáveis!\n+2 Sucatas"); await changeStat('suc', 2); }
+      else if(val === 5) { await customAlert("UM SOBREVIVENTE CAÍDO", "Alguém deixou uma mochila para trás. Que descanse em paz.\n+1 Suprimento"); await changeStat('sup', 1); }
+      else if(val === 6) { await customAlert("JACKPOT MILITAR", "Uma caixa de munição selada pelo exército!\n+1 Munição e +1 Suprimento"); await changeStat('mun', 1); await changeStat('sup', 1); }
+      
+      if(gameState.diceAllocated === 5) setTimeout(endRound, 500);
+    }
+
+    async function endRound() {
+      // 1. Barricada
+      let barSlots = document.querySelectorAll('.loc[data-loc="barricada"] .d-slot.occupied');
+      let barSum = 0;
+      barSlots.forEach(s => barSum += parseInt(s.dataset.val));
+      
+      if (barSum >= gameState.threat) {
+         await customAlert("BARRICADA SEGUROU", `Você conseguiu dormir em paz!\nDefesa ${barSum} aguentou a Ameaça ${gameState.threat}.`);
+      } else {
+         await customAlert("A BARRICADA CAIU", `Os zumbis invadiram!\nSua Defesa ${barSum} foi insuficiente contra a Ameaça ${gameState.threat}.\n\nVocê perdeu 1 Vida e roubaram 1 Suprimento!`);
+         await changeStat('vida', -1);
+         await changeStat('sup', -1);
+      }
+      
+      // 2. Oficina
+      let ofSlots = document.querySelectorAll('.loc[data-loc="oficina"] .d-slot.occupied');
+      let ofVals = [];
+      ofSlots.forEach(s => ofVals.push(parseInt(s.dataset.val)));
+      ofVals.sort((a,b) => a-b);
+      
+      if (ofVals.length === 2) {
+         if (ofVals[0] === ofVals[1]) { await customAlert("COMBO DA OFICINA", "PAR (Gambiarra)!\nVocê otimizou os materiais: +1 Sucata"); await changeStat('suc', 1); }
+      } else if (ofVals.length === 3) {
+         if (ofVals[0] === ofVals[1] && ofVals[1] === ofVals[2]) {
+             await customAlert("COMBO DA OFICINA", "TRINCA (Peça Intacta)!\nVocê achou uma peça funcionando!\nAvança +1 Conserto GRÁTIS."); await changeStat('carro', 1); 
+         } else if (ofVals[0] + 1 === ofVals[1] && ofVals[1] + 1 === ofVals[2]) {
+             await customAlert("COMBO DA OFICINA", "SEQUÊNCIA (Pólvora e Chumbo)!\nVocê fabricou balas artesanais.\n+1 Munição."); await changeStat('mun', 1);
+         } else if (ofVals[0] === ofVals[1] || ofVals[1] === ofVals[2]) {
+             await customAlert("COMBO DA OFICINA", "PAR (Gambiarra)!\nVocê otimizou os materiais: +1 Sucata"); await changeStat('suc', 1);
+         }
+      }
+      
+      let cost = (gameState.weather === 5) ? 3 : 2;
+      for(let i=0; i<ofVals.length; i++) {
+         if (gameState.suc >= cost && gameState.carro < 6) {
+             let ans = await customConfirm("MÃO NA MASSA", `Você tem ${gameState.suc} sucatas estocadas.\n\nDeseja gastar ${cost} sucatas para consertar 1 parte do veículo de fuga?`, "Consertar", "Guardar");
+             if(ans) {
+                await changeStat('suc', -cost);
+                await changeStat('carro', 1);
+             }
+         }
+      }
+      
+      // 3. Advance Horde
+      await customAlert("O TEMPO ACABA...", "Gemidos ecoam no horizonte.\nA Horda avança cada vez mais perto...");
+      await changeStat('horda', 1);
+      
+      if (gameState.horda > 12) {
+         await customAlert("FIM DA LINHA", "A HORDA TE ALCANÇOU!\nCentenas deles arrombaram o Abrigo.\nVocê virou comida de zumbi.\n\nFIM DE JOGO.");
+      } else {
+         document.getElementById('dOut').innerHTML = '- - - - -';
+         setTimeout(rollWeather, 1000);
+      }
+    }
+
+    function rollEscape() {
+      const dEscape = document.getElementById('dEscape');
+      let rolls = 0;
+      let interval = setInterval(() => {
+        dEscape.innerHTML = '';
+        for(let i=0; i<2; i++) dEscape.innerHTML += `<div class="die-ui green">${Math.floor(Math.random() * 6) + 1}</div>`;
+        rolls++;
+        if(rolls > 10) {
+          clearInterval(interval);
+          let v1 = Math.floor(Math.random() * 6) + 1;
+          let v2 = Math.floor(Math.random() * 6) + 1;
+          dEscape.innerHTML = `<div class="die-ui green">${v1}</div><div class="die-ui green">${v2}</div>`;
+          
+          setTimeout(async () => {
+             let sum = v1 + v2;
+             if(sum <= 8 && gameState.mun > 0) {
+                 let answer = await customPrompt("FOGO DE COBERTURA", `Os mortos cercaram o carro!\nSua fuga rendeu apenas ${sum}, você precisa de MAIS DE 8.\n\nVocê tem ${gameState.mun} munições.\nQuantas deseja descarregar para abrir caminho?\n(Cada tiro = +1 no resultado)`, "0", "Atirar", "Aceitar a Falha");
+                 answer = parseInt(answer);
+                 if(!isNaN(answer) && answer > 0 && answer <= gameState.mun) {
+                     await changeStat('mun', -answer);
+                     sum += answer;
+                 }
+             }
+             if(sum > 8) {
+                 await customAlert("FUGA BEM SUCEDIDA", `Resultado: ${sum} (>8).\n\nO motor ronca! Você atropela os mortos-vivos e acelera rumo à liberdade!\n\nPARABÉNS, VOCÊ SOBREVIVEU!`);
+             } else {
+                 await customAlert("O MOTOR MORREU...", `Resultado: ${sum}.\n\nOs zumbis arranharam o para-brisa e forçaram você a recuar.\nVocê perdeu -1 Vida na confusão.\n\nTente sobreviver até tentar de novo!`);
+                 await changeStat('vida', -1);
+             }
+          }, 500);
+        }
+      }, 50);
+    }
+  </script>
+</body>
+</html>

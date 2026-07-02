@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z-Scavenger: Destino D6 - Manual de Regras</title>
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --border-dark: #000;
+    }
+    @page {
+      size: A4 portrait;
+      margin: 15mm;
+    }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    body { 
+      background-color: #FFF; 
+      color: #000; 
+      font-family: 'Arial', sans-serif; 
+      line-height: 1.4; 
+      padding: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .manual-container { 
+      width: 100%; 
+      max-width: 210mm; 
+      margin: 0 auto; 
+    }
+    header { 
+      text-align: center; 
+      border-bottom: 4px solid var(--border-dark); 
+      padding-bottom: 15px; 
+      margin-bottom: 25px; 
+    }
+    h1 { 
+      font-size: 32px; 
+      text-transform: uppercase; 
+      margin-bottom: 5px; 
+      letter-spacing: 2px;
+      color: var(--primary);
+      font-weight: 900;
+    }
+    .subtitle { 
+      font-size: 14px; 
+      font-weight: bold; 
+      text-transform: uppercase; 
+      color: #333; 
+    }
+    section { 
+      margin-bottom: 20px; 
+    }
+    table, .note-box { 
+      page-break-inside: avoid; 
+      break-inside: avoid;
+    }
+    h2, h3, h4 {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    h2 { 
+      font-size: 18px; 
+      text-transform: uppercase; 
+      border-bottom: 2px solid var(--border-dark); 
+      padding-bottom: 4px; 
+      margin-bottom: 10px; 
+      margin-top: 15px; 
+      color: var(--primary);
+      font-weight: 900;
+    }
+    h3 {
+      font-size: 15px;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-top: 12px;
+      margin-bottom: 6px;
+    }
+    p { 
+      margin-bottom: 10px; 
+      font-size: 13px; 
+      text-align: justify; 
+    }
+    ul, ol { 
+      margin-bottom: 12px; 
+      padding-left: 20px; 
+      font-size: 13px; 
+    }
+    li { 
+      margin-bottom: 4px; 
+    }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin: 12px 0; 
+      border: 2px solid var(--border-dark);
+    }
+    th, td { 
+      border: 1px solid var(--border-dark); 
+      padding: 6px 10px; 
+      font-size: 12px; 
+      text-align: left; 
+    }
+    th { 
+      background-color: #eee; 
+      font-weight: 900; 
+      text-transform: uppercase; 
+      color: var(--primary);
+    }
+    td strong { 
+      font-weight: 900; 
+      text-transform: uppercase;
+    }
+    .note-box { 
+      border: 2px solid var(--border-dark); 
+      background-color: #f9f9f9; 
+      padding: 10px 15px; 
+      margin: 15px 0; 
+      font-size: 12px; 
+      font-style: italic; 
+    }
+    .note-box strong {
+      font-weight: 900;
+      font-style: normal;
+      color: var(--primary);
+    }
+    footer { 
+      border-top: 2px solid var(--border-dark); 
+      padding-top: 10px; 
+      margin-top: 30px; 
+      text-align: center; 
+      font-size: 11px; 
+      font-weight: bold;
+      color: #333; 
+    }
+  </style>
+</head>
+<body>
+  <main class="manual-container">
+    <header>
+      <h1>Z-SCAVENGER</h1>
+      <p class="subtitle">Destino D6 - Manual de Regras PnP</p>
+      <p style="font-size: 11px; text-align: center; margin-top: 5px; font-weight: bold;">Protocolo D6 // Sobrevivência Urbana Solo // Print & Play Edition</p>
+    </header>
+
+    <section>
+      <h2>1. Introdução e Objetivo</h2>
+      <p>Você é o último sobrevivente em uma metrópole tomada por uma epidemia zumbi. Sua única chance de escapar é consertar um carro abandonado. Você deve vasculhar os arredores perigosos em busca de peças e mantimentos básicos, enquanto fortifica sua barricada. Se demorar muito, a horda vai invadir seu abrigo.</p>
+      <ul>
+        <li><strong>Objetivo de Vitória:</strong> Alcançar o nível final de conserto do carro (6) na Oficina e passar no <strong>Teste de Fuga Final</strong>.</li>
+        <li><strong>Condições de Derrota:</strong>
+          <ol>
+            <li>Sua <strong>Vida</strong> ser reduzida a 0.</li>
+            <li>Sua <strong>Infecção</strong> atingir o nível 6.</li>
+            <li>A <strong>Trilha da Horda</strong> chegar ao espaço 12 (tempo esgotado).</li>
+          </ol>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>2. Componentes Necessários</h2>
+      <ul>
+        <li><strong>1 Folha de Jogo</strong> impressa (contendo medidores, zonas de dados e mapa).</li>
+        <li><strong>5 Dados D6 comuns</strong> (para suas ações diárias).</li>
+        <li><strong>1 Dado D6 extra</strong> (de cor diferente, usado para encontros e clima).</li>
+        <li><strong>1 Lápis e Borracha</strong> (ou tokens físicos) para marcar recursos na folha.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>3. Os Medidores de Status (Tensão)</h2>
+      <ul>
+        <li><strong>Vida (0 a 6):</strong> Integridade física. Se chegar a 0, você morre.</li>
+        <li><strong>Infecção (0 a 6):</strong> Gravidade do contágio. Se chegar a 6, você se transforma.</li>
+        <li><strong>Suprimentos (0 a 8):</strong> Comida/água. Consome 1 por rodada. Se não houver suprimentos suficientes, perde 1 de Vida.</li>
+        <li><strong>Munição (0 a 6):</strong> Adiciona +1 na rolagem de defesa da Barricada ou fuga por unidade gasta.</li>
+        <li><strong>Sucata (0 a 6):</strong> Gaste na Oficina para reparar o veículo.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>4. O Fluxo de Turno (Ciclo Diário)</h2>
+      
+      <h3>Fase 1: Clima e Ameaça</h3>
+      <p>Role 1 dado D6 (Dado de Evento) para determinar o clima do dia e a respectiva Ameaça Zumbi (força do ataque na Barricada):</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 12%;">D6</th>
+            <th style="width: 30%;">Clima</th>
+            <th style="width: 46%;">Efeitos e Debuffs</th>
+            <th style="width: 12%;">Ameaça</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="text-align: center;"><strong>1-2</strong></td><td><strong>Céu Limpo</strong></td><td>Dia tranquilo, sem bônus negativos.</td><td style="text-align: center;"><strong>4</strong></td></tr>
+          <tr><td style="text-align: center;"><strong>3</strong></td><td><strong>Nublado</strong></td><td>Visibilidade moderada, sem debuffs.</td><td style="text-align: center;"><strong>6</strong></td></tr>
+          <tr><td style="text-align: center;"><strong>4</strong></td><td><strong>Chuva Fina</strong></td><td>Dados 3 ou 4 alocados no Abrigo não curam Vida neste turno.</td><td style="text-align: center;"><strong>7</strong></td></tr>
+          <tr><td style="text-align: center;"><strong>5</strong></td><td><strong>Chuva Forte</strong></td><td>Consertar o carro na Oficina custa 1 Sucata extra (total de 3).</td><td style="text-align: center;"><strong>8</strong></td></tr>
+          <tr><td style="text-align: center;"><strong>6</strong></td><td><strong>Névoa Densa</strong></td><td>Visibilidade Zero: Você não pode gastar Munição para ganhar bônus na defesa da Barricada.</td><td style="text-align: center;"><strong>10</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Fase 2: Consumo</h3>
+      <p>Reduza seu medidor de <strong>Suprimentos</strong> em 1 unidade. Se já estiver em 0 de Suprimentos, você sofre 1 de dano de <strong>Vida</strong>.</p>
+
+      <h3>Fase 3: Rolagem de Ações</h3>
+      <p>Role seus 5 dados D6 comuns. Estes são os valores que você terá para trabalhar hoje.</p>
+
+      <h3>Fase 4: Alocação</h3>
+      <p>Distribua seus dados fisicamente sobre a Folha de Jogo nas zonas desejadas: Barricada, Locais de Exploração, Abrigo e Oficina.</p>
+    </section>
+
+
+
+    <section>
+      <h3>Fase 5: Resolução das Ações</h3>
+      <p>Resolva os locais na seguinte ordem sugerida:</p>
+      
+      <h4>A. Barricada (Defesa Obrigatória)</h4>
+      <p>Você pode alocar até 2 dados aqui. Some os valores dos dados alocados. Você pode gastar Munição para adicionar +1 ao total por munição gasta (exceto na Névoa Densa).</p>
+      <ul>
+        <li><strong>Sucesso (Soma >= Ameaça Atual):</strong> A barricada segura o ataque.</li>
+        <li><strong>Falha (Soma < Ameaça):</strong> A defesa cede! Você perde <strong>1 de Vida E 1 de Suprimento</strong>.</li>
+      </ul>
+
+      <h4>B. Exploração (Scavenge)</h4>
+      <p><em>Máximo de 2 dados por local.</em></p>
+      <ul>
+        <li><strong>Supermercado (Requer DADOS ÍMPARES: 1, 3 ou 5):</strong> Ganhe +1 de <strong>Suprimento</strong> por dado.</li>
+        <li><strong>Farmácia (Requer DADOS 4 ou 5):</strong> Ganhe +1 de <strong>Vida</strong> por dado.</li>
+        <li><strong>Delegacia (Requer DADOS PARES: 2, 4 ou 6):</strong> Ganhe +1 de <strong>Munição</strong> por dado.</li>
+      </ul>
+
+      <h4>C. Abrigo (Recuperação Segura)</h4>
+      <p>Aloque até 1 dado (ou mais, dependendo da sua regra de casa) para tratar ferimentos:</p>
+      <ul>
+        <li><strong>Dado 3 ou 4:</strong> Recupere +1 de <strong>Vida</strong>.</li>
+        <li><strong>Dado 5 ou 6:</strong> Recupere +2 de <strong>Vida</strong> E reduza sua <strong>Infecção</strong> em -1 ponto.</li>
+      </ul>
+
+      <h4>D. Oficina e Combos</h4>
+      <p>Aloque até 3 dados. Cada nível de conserto do veículo custa <strong>2 Sucatas</strong> (ou 3 na Chuva Forte).</p>
+      <p>Você pode realizar combinações de dados na Oficina para gerar recursos (cada combo só pode ser usado <strong>1x por partida inteira</strong>):</p>
+      <ul>
+        <li><strong>PAR (2 dados iguais):</strong> <em>Gambiarra</em> -> Ganhe +1 de Sucata.</li>
+        <li><strong>TRINCA (3 dados iguais):</strong> <em>Peça Intacta</em> -> Avance 1 espaço no Conserto do Carro de graça.</li>
+        <li><strong>SEQUÊNCIA (ex: 2, 3 e 4):</strong> <em>Pólvora e Chumbo</em> -> Ganhe +1 Munição.</li>
+      </ul>
+
+      <h3>Fase 6: Avanço da Horda</h3>
+      <p>No final do dia, marque 1 espaço na <strong>Trilha da Horda (Tempo)</strong>. Se chegar ao final (espaço 12), a horda invade massivamente e é Game Over.</p>
+    </section>
+
+    <section>
+      <h2>5. Tabela de Encontros (Role 1 D6)</h2>
+      <p>Sempre que você colocar pelo menos 1 dado em um local de Exploração (Supermercado, Farmácia ou Delegacia), você <strong>deve</strong> rolar 1 Dado de Evento extra para ver o que encontrou por lá:</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 12%; text-align: center;">D6</th>
+            <th style="width: 33%;">Evento</th>
+            <th style="width: 55%;">Consequências</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="text-align: center;"><strong>1</strong></td><td><strong>Zumbis!</strong></td><td>Perca o recurso ganho no local <strong>OU</strong> gaste 1 Munição para escapar.</td></tr>
+          <tr><td style="text-align: center;"><strong>2</strong></td><td><strong>Infecção</strong></td><td>Sofreu um arranhão. Aumente +1 de Infecção na sua barra.</td></tr>
+          <tr><td style="text-align: center;"><strong>3</strong></td><td><strong>Caminho Seguro</strong></td><td>Nada acontece de especial.</td></tr>
+          <tr><td style="text-align: center;"><strong>4</strong></td><td><strong>Achado Útil</strong></td><td>Encontrou materiais valiosos! Ganhe +2 Sucatas extras.</td></tr>
+          <tr><td style="text-align: center;"><strong>5</strong></td><td><strong>Mochila</strong></td><td>Um sobrevivente deixou para trás! Ganhe +1 Suprimento extra.</td></tr>
+          <tr><td style="text-align: center;"><strong>6</strong></td><td><strong>Militar!</strong></td><td>Jackpot! Ganhe +1 Munição e +1 Suprimento extras.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="note-box">
+      <strong>O CLÍMAX (FUGIR):</strong> Assim que você marcar a 6ª caixa do Conserto do Veículo, você está pronto para FUGIR.
+      <br><br>
+      No final desse turno, ou no início do próximo, role <strong>2 Dados comuns</strong>. Você pode gastar Munição da sua reserva para somar +1 por unidade gasta.
+      <br>Se o resultado final for <strong>9 ou maior</strong>, você escapa e VENCE o jogo! Se falhar, você perde 1 Vida e pode tentar de novo no próximo turno, sofrendo todo o fluxo diário e ataques da Barricada normalmente até conseguir!
+    </div>
+
+    <footer>
+      <p>Z-Scavenger: Destino D6 © 2026 - Novo Manual Print & Play</p>
+    </footer>
+
+  </main>
+</body>
+</html>
