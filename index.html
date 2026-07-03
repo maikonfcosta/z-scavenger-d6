@@ -512,25 +512,37 @@
       <h2 style="font-family:'Creepster', cursive; color:#d32f2f; font-size:2.5rem; margin-bottom:10px;">ESCOLHA SEU SOBREVIVENTE</h2>
       <p style="color:#ccc; margin-bottom:20px;">Cada personagem possui uma habilidade única e um objetivo de fuga pessoal.</p>
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:15px; text-align:left;">
-        <div class="loc glass" style="cursor:pointer; border-color:#d32f2f; padding:15px; align-items:flex-start;" onclick="selectChar('mecanico')">
-          <h3 style="color:#d32f2f; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Mecânico</h3>
-          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> O combo "Gambiarra" rende 2 Sucatas em vez de 1.</p>
-          <p style="font-size:0.85rem; color:#fca5a5;"><strong>Objetivo:</strong> Fugir com pelo menos 3 Sucatas no inventário.</p>
+        <div class="loc glass" style="cursor:pointer; border-color:#d32f2f; padding:15px; align-items:flex-start; flex-direction:row; gap:10px;" onclick="selectChar('mecanico')">
+          <img src="img/char_mecanico.png" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 0 5px #d32f2f);" alt="O Mecânico">
+          <div>
+            <h3 style="color:#d32f2f; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Mecânico</h3>
+            <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> O combo "Gambiarra" rende 2 Sucatas em vez de 1.</p>
+            <p style="font-size:0.85rem; color:#fca5a5;"><strong>Objetivo:</strong> Fugir com pelo menos 3 Sucatas no inventário.</p>
+          </div>
         </div>
-        <div class="loc glass" style="cursor:pointer; border-color:#3b82f6; padding:15px; align-items:flex-start;" onclick="selectChar('militar')">
-          <h3 style="color:#3b82f6; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Militar</h3>
-          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Pode gastar 1 Munição na Barricada para somar +2 na Defesa.</p>
-          <p style="font-size:0.85rem; color:#93c5fd;"><strong>Objetivo:</strong> Fugir com 2 Munições sobrando E ter feito "Pólvora e Chumbo".</p>
+        <div class="loc glass" style="cursor:pointer; border-color:#3b82f6; padding:15px; align-items:flex-start; flex-direction:row; gap:10px;" onclick="selectChar('militar')">
+          <img src="img/char_militar.png" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 0 5px #3b82f6);" alt="O Militar">
+          <div>
+            <h3 style="color:#3b82f6; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Militar</h3>
+            <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Pode gastar 1 Munição na Barricada para somar +2 na Defesa.</p>
+            <p style="font-size:0.85rem; color:#93c5fd;"><strong>Objetivo:</strong> Fugir com 2 Munições sobrando E ter feito "Pólvora e Chumbo".</p>
+          </div>
         </div>
-        <div class="loc glass" style="cursor:pointer; border-color:#4ade80; padding:15px; align-items:flex-start;" onclick="selectChar('cientista')">
-          <h3 style="color:#4ade80; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">A Cientista</h3>
-          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Ao recuperar Vida, reduz 1 de Infecção de graça.</p>
-          <p style="font-size:0.85rem; color:#86efac;"><strong>Objetivo:</strong> A Trilha de Infecção deve estar zerada ao fugir.</p>
+        <div class="loc glass" style="cursor:pointer; border-color:#4ade80; padding:15px; align-items:flex-start; flex-direction:row; gap:10px;" onclick="selectChar('cientista')">
+          <img src="img/char_cientista.png" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 0 5px #4ade80);" alt="A Cientista">
+          <div>
+            <h3 style="color:#4ade80; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">A Cientista</h3>
+            <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Ao recuperar Vida, reduz 1 de Infecção de graça.</p>
+            <p style="font-size:0.85rem; color:#86efac;"><strong>Objetivo:</strong> A Trilha de Infecção deve estar zerada ao fugir.</p>
+          </div>
         </div>
-        <div class="loc glass" style="cursor:pointer; border-color:#fbbf24; padding:15px; align-items:flex-start;" onclick="selectChar('batedor')">
-          <h3 style="color:#fbbf24; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Batedor</h3>
-          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Se rolar "1" na Tabela de Encontros, pode re-rolar o dado 1x.</p>
-          <p style="font-size:0.85rem; color:#fcd34d;"><strong>Objetivo:</strong> Ter visitado os 3 locais de exploração E fugir com 2 Suprimentos.</p>
+        <div class="loc glass" style="cursor:pointer; border-color:#fbbf24; padding:15px; align-items:flex-start; flex-direction:row; gap:10px;" onclick="selectChar('batedor')">
+          <img src="img/char_batedor.png" style="width:80px; height:80px; object-fit:contain; filter:drop-shadow(0 0 5px #fbbf24);" alt="O Batedor">
+          <div>
+            <h3 style="color:#fbbf24; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Batedor</h3>
+            <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Se rolar "1" na Tabela de Encontros, pode re-rolar o dado 1x.</p>
+            <p style="font-size:0.85rem; color:#fcd34d;"><strong>Objetivo:</strong> Ter visitado os 3 locais de exploração E fugir com 2 Suprimentos.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -639,16 +651,19 @@
       </div>
     </div>
     <!-- CHARACTER PANEL -->
-    <div id="active-char-panel" class="glass" style="display:none; margin-bottom: 20px; border: 2px solid var(--primary); padding: 15px; position:relative;">
-      <h3 id="char-name" style="font-family:'Special Elite'; color:var(--primary); text-transform:uppercase; margin-bottom:5px; font-size: 1.2rem;"></h3>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-        <div>
-          <span style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#ddd; font-weight:bold;">HABILIDADE</span>
-          <p id="char-ability" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
-        </div>
-        <div>
-          <span style="background:rgba(211,47,47,0.3); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#fff; font-weight:bold;">OBJETIVO DE FUGA</span>
-          <p id="char-objective" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
+    <div id="active-char-panel" class="glass" style="display:none; margin-bottom: 20px; border: 2px solid var(--primary); padding: 15px; position:relative; flex-direction:row; align-items:center; gap:15px;">
+      <img id="char-avatar" src="" style="width:60px; height:60px; object-fit:contain; border-radius:50%; background:rgba(0,0,0,0.5); padding:5px; display:none;">
+      <div style="flex:1;">
+        <h3 id="char-name" style="font-family:'Special Elite'; color:var(--primary); text-transform:uppercase; margin-bottom:5px; font-size: 1.2rem;"></h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+          <div>
+            <span style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#ddd; font-weight:bold;">HABILIDADE</span>
+            <p id="char-ability" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
+          </div>
+          <div>
+            <span style="background:rgba(211,47,47,0.3); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#fff; font-weight:bold;">OBJETIVO DE FUGA</span>
+            <p id="char-objective" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
+          </div>
         </div>
       </div>
       <div style="position:absolute; top:15px; right:15px; text-align:right;">
@@ -844,11 +859,14 @@
       window.playerChar = id;
       document.getElementById('char-select-modal').style.display = 'none';
       document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('active-char-panel').style.display = 'block';
+      document.getElementById('active-char-panel').style.display = 'flex';
       
       const cName = document.getElementById('char-name');
       const cAb = document.getElementById('char-ability');
       const cObj = document.getElementById('char-objective');
+      const cAvatar = document.getElementById('char-avatar');
+      cAvatar.src = 'img/char_' + id + '.png';
+      cAvatar.style.display = 'block';
       
       if(id === 'mecanico') {
         cName.innerText = 'O Mecânico';
