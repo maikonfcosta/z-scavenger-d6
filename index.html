@@ -493,7 +493,7 @@
       <img src="img/logo.jpg" alt="Z-Scavenger Logo" style="max-width: 200px; border-radius: 15px; box-shadow: 0 0 20px var(--primary); margin-bottom: 20px; border: 2px solid var(--primary);">
       <h1 style="font-family:'Creepster', cursive; font-size:4rem; color:var(--primary); margin-bottom:10px; letter-spacing:5px; text-shadow: 2px 2px 10px black;">Z-SCAVENGER</h1>
       <p style="font-family:var(--font-title); font-size:1.5rem; color:#aaa; margin-bottom:40px;">DESTINO D6</p>
-      <button onclick="startGame()" class="btn-roll btn-event" style="font-size:1.5rem; padding:15px 40px; margin: 0 auto; width: 100%;">INICIAR JOGO</button>
+      <button onclick="openCharSelect()" class="btn-roll btn-event" style="font-size:1.5rem; padding:15px 40px; margin: 0 auto; width: 100%;">INICIAR JOGO</button>
       <a href="pnp-source/Z-Scavenger%20PnP.pdf" download="Z-Scavenger PnP.pdf" class="btn-roll btn-action" style="display:inline-block; font-size:1rem; padding:10px 20px; margin-top:15px; width: 100%; text-decoration:none; color:white; background:#222; border:1px solid #555; text-align:center;">📥 Baixar Versão Print & Play</a>
     </div>
   </div>
@@ -503,6 +503,36 @@
     <div class="glass" style="width:95%; max-width:900px; height:90%; padding:20px; display:flex; flex-direction:column; position:relative;">
       <button onclick="closeRules()" style="position:absolute; top:-15px; right:-15px; width:45px; height:45px; border-radius:50%; background:var(--primary); color:#fff; border:2px solid #000; font-weight:bold; font-size:1.4rem; cursor:pointer; z-index:10002; display:flex; justify-content:center; align-items:center;">X</button>
       <iframe src="docs/manual_de_regras.html" style="width:100%; height:100%; border:none; background:#fff; border-radius:8px;"></iframe>
+    </div>
+  </div>
+
+  <!-- MODAL DE SELEÇÃO DE PERSONAGEM -->
+  <div id="char-select-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:10005; justify-content:center; align-items:center; backdrop-filter: blur(8px);">
+    <div class="glass" style="max-width:800px; width:95%; max-height:90%; overflow-y:auto; padding:30px; border:2px solid #d32f2f; box-shadow: 0 0 50px rgba(211,47,47,0.5); text-align:center;">
+      <h2 style="font-family:'Creepster', cursive; color:#d32f2f; font-size:2.5rem; margin-bottom:10px;">ESCOLHA SEU SOBREVIVENTE</h2>
+      <p style="color:#ccc; margin-bottom:20px;">Cada personagem possui uma habilidade única e um objetivo de fuga pessoal.</p>
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:15px; text-align:left;">
+        <div class="loc glass" style="cursor:pointer; border-color:#d32f2f; padding:15px; align-items:flex-start;" onclick="selectChar('mecanico')">
+          <h3 style="color:#d32f2f; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Mecânico</h3>
+          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> O combo "Gambiarra" rende 2 Sucatas em vez de 1.</p>
+          <p style="font-size:0.85rem; color:#fca5a5;"><strong>Objetivo:</strong> Fugir com pelo menos 3 Sucatas no inventário.</p>
+        </div>
+        <div class="loc glass" style="cursor:pointer; border-color:#3b82f6; padding:15px; align-items:flex-start;" onclick="selectChar('militar')">
+          <h3 style="color:#3b82f6; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Militar</h3>
+          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Pode gastar 1 Munição na Barricada para somar +2 na Defesa.</p>
+          <p style="font-size:0.85rem; color:#93c5fd;"><strong>Objetivo:</strong> Fugir com 2 Munições sobrando E ter feito "Pólvora e Chumbo".</p>
+        </div>
+        <div class="loc glass" style="cursor:pointer; border-color:#4ade80; padding:15px; align-items:flex-start;" onclick="selectChar('cientista')">
+          <h3 style="color:#4ade80; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">A Cientista</h3>
+          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Ao recuperar Vida, reduz 1 de Infecção de graça.</p>
+          <p style="font-size:0.85rem; color:#86efac;"><strong>Objetivo:</strong> A Trilha de Infecção deve estar zerada ao fugir.</p>
+        </div>
+        <div class="loc glass" style="cursor:pointer; border-color:#fbbf24; padding:15px; align-items:flex-start;" onclick="selectChar('batedor')">
+          <h3 style="color:#fbbf24; font-family:'Special Elite'; margin-bottom:5px; text-transform:uppercase;">O Batedor</h3>
+          <p style="font-size:0.85rem; margin-bottom:5px; color:#ddd;"><strong>Habilidade:</strong> Se rolar "1" na Tabela de Encontros, pode re-rolar o dado 1x.</p>
+          <p style="font-size:0.85rem; color:#fcd34d;"><strong>Objetivo:</strong> Ter visitado os 3 locais de exploração E fugir com 2 Suprimentos.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -606,6 +636,26 @@
             for(let i=1; i<=12; i++) document.write(`<div class="t-node" onclick="markTracker(this)">${i}</div>`);
           </script>
         </div>
+      </div>
+    </div>
+    <!-- CHARACTER PANEL -->
+    <div id="active-char-panel" class="glass" style="display:none; margin-bottom: 20px; border: 2px solid var(--primary); padding: 15px; position:relative;">
+      <h3 id="char-name" style="font-family:'Special Elite'; color:var(--primary); text-transform:uppercase; margin-bottom:5px; font-size: 1.2rem;"></h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+        <div>
+          <span style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#ddd; font-weight:bold;">HABILIDADE</span>
+          <p id="char-ability" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
+        </div>
+        <div>
+          <span style="background:rgba(211,47,47,0.3); padding:2px 5px; border-radius:3px; font-size:0.75rem; color:#fff; font-weight:bold;">OBJETIVO DE FUGA</span>
+          <p id="char-objective" style="font-size:0.85rem; color:#ccc; margin-top:5px;"></p>
+        </div>
+      </div>
+      <div style="position:absolute; top:15px; right:15px; text-align:right;">
+        <label style="font-size:0.75rem; color:#aaa; font-weight:bold; cursor:pointer;">
+          CUMPRIDO? 
+          <input type="checkbox" id="char-obj-check" style="transform: scale(1.5); margin-left: 5px; accent-color: var(--primary); cursor:pointer;">
+        </label>
       </div>
     </div>
 
@@ -784,14 +834,49 @@
       document.getElementById('btn-mute').innerText = isMuted ? "🔇 Mudo" : "🔊 Som";
     }
 
-    async function startGame() {
+    window.playerChar = '';
+
+    function openCharSelect() {
+      document.getElementById('char-select-modal').style.display = 'flex';
+    }
+
+    function selectChar(id) {
+      window.playerChar = id;
+      document.getElementById('char-select-modal').style.display = 'none';
       document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('active-char-panel').style.display = 'block';
+      
+      const cName = document.getElementById('char-name');
+      const cAb = document.getElementById('char-ability');
+      const cObj = document.getElementById('char-objective');
+      
+      if(id === 'mecanico') {
+        cName.innerText = 'O Mecânico';
+        cName.style.color = '#d32f2f'; document.getElementById('active-char-panel').style.borderColor = '#d32f2f';
+        cAb.innerHTML = 'O combo <strong>"Gambiarra"</strong> rende <strong>2 Sucatas</strong> em vez de 1.';
+        cObj.innerHTML = 'Fugir com pelo menos <strong>3 Sucatas</strong> no inventário.';
+      } else if(id === 'militar') {
+        cName.innerText = 'O Militar';
+        cName.style.color = '#3b82f6'; document.getElementById('active-char-panel').style.borderColor = '#3b82f6';
+        cAb.innerHTML = 'Pode gastar 1 Munição na Barricada para somar <strong>+2 na Defesa</strong>.';
+        cObj.innerHTML = 'Fugir com <strong>2 Munições</strong> sobrando E ter feito <strong>"Pólvora e Chumbo"</strong>.';
+      } else if(id === 'cientista') {
+        cName.innerText = 'A Cientista';
+        cName.style.color = '#4ade80'; document.getElementById('active-char-panel').style.borderColor = '#4ade80';
+        cAb.innerHTML = 'Ao recuperar Vida (Farmácia ou Abrigo), reduz <strong>1 de Infecção</strong> de graça.';
+        cObj.innerHTML = 'A Trilha de Infecção deve estar <strong>zerada (vazia)</strong> ao fugir.';
+      } else if(id === 'batedor') {
+        cName.innerText = 'O Batedor';
+        cName.style.color = '#fbbf24'; document.getElementById('active-char-panel').style.borderColor = '#fbbf24';
+        cAb.innerHTML = 'Se rolar "1" na Tabela de Encontros, pode <strong>re-rolar o dado 1 vez</strong>.';
+        cObj.innerHTML = 'Ter <strong>visitado os 3 locais</strong> de exploração E fugir com <strong>2 Suprimentos</strong>.';
+      }
       
       const audio = document.getElementById('bg-music');
-      audio.volume = 0.35; // Volume ambiente agradável
+      audio.volume = 0.35;
       audio.play().catch(e => console.log('Música não encontrada ou autoplay bloqueado.'));
       
-      await runTutorial();
+      runTutorial();
     }
     
     async function runTutorial() {
@@ -911,6 +996,10 @@
 
     async function changeStat(stat, delta) {
       gameState[stat] += delta;
+      if(stat === 'vida' && delta > 0 && window.playerChar === 'cientista' && gameState.inf > 0) {
+         gameState.inf -= 1;
+         setTimeout(() => customAlert("IMUNIDADE ALTA", "A Cientista recuperou Vida e automaticamente reduziu 1 de Infecção!"), 300);
+      }
       if (stat === 'vida') gameState.vida = Math.max(0, Math.min(6, gameState.vida));
       if (stat === 'inf') gameState.inf = Math.max(0, Math.min(6, gameState.inf));
       if (stat === 'sup') gameState.sup = Math.max(0, Math.min(8, gameState.sup));
@@ -1070,7 +1159,7 @@
       }, 50);
     }
 
-    function triggerEncounter(resourceName) {
+    function triggerEncounter(resourceName, rerolled=false) {
       const dEvent = document.getElementById('dEvent');
       let rolls = 0;
       let interval = setInterval(() => {
@@ -1080,13 +1169,20 @@
           clearInterval(interval);
           let val = Math.floor(Math.random() * 6) + 1;
           dEvent.innerHTML = `<div class="die-ui red">${val}</div>`;
-          setTimeout(() => resolveEncounter(val, resourceName), 100);
+          setTimeout(() => resolveEncounter(val, resourceName, rerolled), 100);
         }
       }, 50);
     }
 
-    async function resolveEncounter(val, res) {
+    async function resolveEncounter(val, res, rerolled=false) {
       if(val === 1) {
+         if(window.playerChar === 'batedor' && !rerolled) {
+            let rr = await customConfirm("ZUMBIS! (Furtividade)", "Os mortos-vivos estão na porta.\nO Batedor pode re-rolar o dado 1 vez. Deseja re-rolar?", "Re-rolar", "Aceitar o Destino");
+            if(rr) {
+                triggerEncounter(res, true);
+                return;
+            }
+         }
          let ans = await customConfirm("ZUMBIS NA SAÍDA!", "Os mortos-vivos bloquearam a porta!\nO que você fará?", "Largar o Recurso", "Atirar (-1 Munição)");
          if(ans) {
             await changeStat(res, -1);
@@ -1110,6 +1206,13 @@
       let barSum = 0;
       barSlots.forEach(s => barSum += parseInt(s.dataset.val));
       
+      if (barSum < gameState.threat && window.playerChar === 'militar' && gameState.mun > 0) {
+          let ans = await customConfirm("TIRO TÁTICO", `Sua Defesa é ${barSum} e a Ameaça é ${gameState.threat}. O Militar pode gastar 1 Munição para ganhar +2 de Defesa.\nDeseja atirar?`, "Sim (-1 Munição)", "Não");
+          if (ans) {
+              await changeStat('mun', -1);
+              barSum += 2;
+          }
+      }
       if (barSum >= gameState.threat) {
          await customAlert("BARRICADA SEGUROU", `Você conseguiu dormir em paz!\nDefesa ${barSum} aguentou a Ameaça ${gameState.threat}.`);
       } else {
@@ -1124,15 +1227,16 @@
       ofSlots.forEach(s => ofVals.push(parseInt(s.dataset.val)));
       ofVals.sort((a,b) => a-b);
       
+      let gambiarraBonus = (window.playerChar === 'mecanico') ? 2 : 1;
       if (ofVals.length === 2) {
-         if (ofVals[0] === ofVals[1]) { await customAlert("COMBO DA OFICINA", "PAR (Gambiarra)!\nVocê otimizou os materiais: +1 Sucata"); await changeStat('suc', 1); }
+         if (ofVals[0] === ofVals[1]) { await customAlert("COMBO DA OFICINA", `PAR (Gambiarra)!\nVocê otimizou os materiais: +${gambiarraBonus} Sucata`); await changeStat('suc', gambiarraBonus); }
       } else if (ofVals.length === 3) {
          if (ofVals[0] === ofVals[1] && ofVals[1] === ofVals[2]) {
              await customAlert("COMBO DA OFICINA", "TRINCA (Peça Intacta)!\nVocê achou uma peça funcionando!\nAvança +1 Conserto GRÁTIS."); await changeStat('carro', 1); 
          } else if (ofVals[0] + 1 === ofVals[1] && ofVals[1] + 1 === ofVals[2]) {
              await customAlert("COMBO DA OFICINA", "SEQUÊNCIA (Pólvora e Chumbo)!\nVocê fabricou balas artesanais.\n+1 Munição."); await changeStat('mun', 1);
          } else if (ofVals[0] === ofVals[1] || ofVals[1] === ofVals[2]) {
-             await customAlert("COMBO DA OFICINA", "PAR (Gambiarra)!\nVocê otimizou os materiais: +1 Sucata"); await changeStat('suc', 1);
+             await customAlert("COMBO DA OFICINA", `PAR (Gambiarra)!\nVocê otimizou os materiais: +${gambiarraBonus} Sucata`); await changeStat('suc', gambiarraBonus);
          }
       }
       
