@@ -609,45 +609,89 @@
       </div>
     </div>
 
-    <!-- MAP AREA -->
-    <div class="map-area">
+    <!-- TOP AREA: Clima e Barricada -->
+    <div class="top-area" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+      <div class="table-container glass" style="height: 100%;">
+        <div class="table-header">TABELA DE CLIMA E AMEAÇA (Role 1D6)</div>
+        <table style="height: calc(100% - 40px);">
+          <tr><th>1 - 2</th><td><strong>Céu Limpo:</strong> (Ameaça 4/5) Dia tranquilo, sem bônus negativos.</td></tr>
+          <tr><th>3</th><td><strong>Nublado:</strong> (Ameaça 6) Visibilidade moderada.</td></tr>
+          <tr><th>4</th><td><strong>Chuva Fina:</strong> (Ameaça 7) Dados 3/4 no Abrigo não curam Vida.</td></tr>
+          <tr><th>5</th><td><strong>Chuva Forte:</strong> (Ameaça 8) Consertar o carro custa 1 Sucata extra (3).</td></tr>
+          <tr><th>6</th><td><strong>Névoa Densa:</strong> (Ameaça 10) Visibilidade Zero: Não gasta Munição na defesa.</td></tr>
+        </table>
+      </div>
+
+      <!-- Barricada -->
+      <div class="loc glass" data-loc="barricada">
+        <img src="img/loc_barricada.jpg" class="loc-img" alt="Barricada" style="height: 130px;">
+        <div class="loc-title" style="color: var(--primary);">Barricada (Obrigatório)</div>
+        <div class="loc-req">DEFESA CONTRA HORDAS</div>
+        <div class="loc-reward">Soma de Dados >= Ameaça Atual</div>
+        <div class="dice-slots">
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+          <div class="d-slot" onclick="clickSlot(this)">D</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MIDDLE AREA: Locais de Encontro -->
+    <div class="encounter-group" style="border: 2px solid var(--primary); border-radius: 12px; padding: 15px; margin-bottom: 20px; background: rgba(211,47,47,0.05); box-shadow: inset 0 0 20px rgba(211,47,47,0.2);">
+      <h3 style="text-align: center; color: var(--primary); font-family: var(--font-title); margin-bottom: 15px; letter-spacing: 1px;">ZONA DE EXPLORAÇÃO (Requer Rolagem de Encontro)</h3>
+      <div class="map-area" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <!-- Supermercado -->
+        <div class="loc glass" data-loc="supermercado" style="border-color: rgba(211,47,47,0.5);">
+          <img src="img/loc_supermercado.jpg" class="loc-img" alt="Supermercado">
+          <div class="loc-title">Supermercado</div>
+          <div class="loc-req">DADOS 1, 3 OU 5 (ÍMPARES)</div>
+          <div class="loc-reward">+1 Suprimento p/ dado</div>
+          <div class="dice-slots">
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+          </div>
+        </div>
+
+        <!-- Farmácia -->
+        <div class="loc glass" data-loc="farmacia" style="border-color: rgba(211,47,47,0.5);">
+          <img src="img/loc_farmacia.jpg" class="loc-img" alt="Farmácia">
+          <div class="loc-title">Farmácia</div>
+          <div class="loc-req">DADOS 4 OU 5</div>
+          <div class="loc-reward">+1 Vida p/ dado</div>
+          <div class="dice-slots">
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+          </div>
+        </div>
+
+        <!-- Delegacia -->
+        <div class="loc glass" data-loc="delegacia" style="border-color: rgba(211,47,47,0.5);">
+          <img src="img/loc_delegacia.jpg" class="loc-img" alt="Delegacia">
+          <div class="loc-title">Delegacia</div>
+          <div class="loc-req">DADOS 2, 4 OU 6 (PARES)</div>
+          <div class="loc-reward">+1 Munição p/ dado</div>
+          <div class="dice-slots">
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+            <div class="d-slot" onclick="clickSlot(this)">D</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container glass" style="margin-top: 20px; border: 1px solid rgba(211,47,47,0.5);">
+        <div class="table-header" style="color: var(--primary);">TABELA DE ENCONTROS (Role 1D6 ao explorar acima)</div>
+        <table>
+          <tr><th>1</th><td><strong>Zumbis Bloqueiam Saída!</strong> Perca o recurso do local OU gaste 1 Munição.</td></tr>
+          <tr><th>2</th><td><strong>Risco de Infecção:</strong> Aumente +1 de Infecção na sua barra.</td></tr>
+          <tr><th>3</th><td><strong>Caminho Seguro:</strong> Nada acontece de especial.</td></tr>
+          <tr><th>4</th><td><strong>Achado Útil:</strong> Encontrou materiais valiosos! Ganhe +2 Sucatas.</td></tr>
+          <tr><th>5</th><td><strong>Mochila Abandonada:</strong> Um sobrevivente deixou para trás! Ganhe +1 Suprimento.</td></tr>
+          <tr><th>6</th><td><strong>Estoque Militar!</strong> Jackpot! Ganhe +1 Munição e +1 Suprimento extras.</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- BOTTOM AREA: Abrigo e Oficina -->
+    <div class="safe-area" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
       
-      <!-- Supermercado -->
-      <div class="loc glass" data-loc="supermercado">
-        <img src="img/loc_supermercado.jpg" class="loc-img" alt="Supermercado">
-        <div class="loc-title">Supermercado</div>
-        <div class="loc-req">DADOS 1, 3 OU 5 (ÍMPARES)</div>
-        <div class="loc-reward">+1 Suprimento p/ dado</div>
-        <div class="dice-slots">
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-        </div>
-      </div>
-
-      <!-- Farmácia -->
-      <div class="loc glass" data-loc="farmacia">
-        <img src="img/loc_farmacia.jpg" class="loc-img" alt="Farmácia">
-        <div class="loc-title">Farmácia</div>
-        <div class="loc-req">DADOS 4 OU 5</div>
-        <div class="loc-reward">+1 Vida p/ dado</div>
-        <div class="dice-slots">
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-        </div>
-      </div>
-
-      <!-- Delegacia -->
-      <div class="loc glass" data-loc="delegacia">
-        <img src="img/loc_delegacia.jpg" class="loc-img" alt="Delegacia">
-        <div class="loc-title">Delegacia</div>
-        <div class="loc-req">DADOS 2, 4 OU 6 (PARES)</div>
-        <div class="loc-reward">+1 Munição p/ dado</div>
-        <div class="dice-slots">
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-        </div>
-      </div>
-
       <!-- Abrigo -->
       <div class="loc glass" data-loc="abrigo">
         <img src="img/loc_abrigo.jpg" class="loc-img" alt="Abrigo">
@@ -655,18 +699,6 @@
         <div class="loc-req">RECUPERAÇÃO SEGURA</div>
         <div class="loc-reward">(3-4): +1 Vida | (5-6): +2 Vida, -1 Inf</div>
         <div class="dice-slots">
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
-        </div>
-      </div>
-
-      <!-- Barricada -->
-      <div class="loc glass" data-loc="barricada">
-        <img src="img/loc_barricada.jpg" class="loc-img" alt="Barricada">
-        <div class="loc-title" style="color: var(--primary);">Barricada (Obrigatório)</div>
-        <div class="loc-req">DEFESA CONTRA HORDAS</div>
-        <div class="loc-reward">Soma de Dados >= Ameaça Atual</div>
-        <div class="dice-slots">
-          <div class="d-slot" onclick="clickSlot(this)">D</div>
           <div class="d-slot" onclick="clickSlot(this)">D</div>
         </div>
       </div>
@@ -708,32 +740,15 @@
 
     </div>
 
-    <!-- FOOTER AREA -->
-    <div class="footer-area">
-      
-      <div class="table-container glass">
-        <div class="table-header">TABELA DE CLIMA E AMEAÇA (Role 1D6)</div>
-        <table>
-          <tr><th>1 - 2</th><td><strong>Céu Limpo:</strong> (Ameaça 4/5) Dia tranquilo, sem bônus negativos.</td></tr>
-          <tr><th>3</th><td><strong>Nublado:</strong> (Ameaça 6) Visibilidade moderada.</td></tr>
-          <tr><th>4</th><td><strong>Chuva Fina:</strong> (Ameaça 7) Dados 3/4 no Abrigo não curam Vida.</td></tr>
-          <tr><th>5</th><td><strong>Chuva Forte:</strong> (Ameaça 8) Consertar o carro custa 1 Sucata extra (3).</td></tr>
-          <tr><th>6</th><td><strong>Névoa Densa:</strong> (Ameaça 10) Visibilidade Zero: Não gasta Munição na defesa.</td></tr>
-        </table>
-      </div>
-
-      <div class="table-container glass">
-        <div class="table-header">TABELA DE ENCONTROS (Role 1D6)</div>
-        <table>
-          <tr><th>1</th><td><strong>Zumbis Bloqueiam Saída!</strong> Perca o recurso do local OU gaste 1 Munição.</td></tr>
-          <tr><th>2</th><td><strong>Risco de Infecção:</strong> Aumente +1 de Infecção na sua barra.</td></tr>
-          <tr><th>3</th><td><strong>Caminho Seguro:</strong> Nada acontece de especial.</td></tr>
-          <tr><th>4</th><td><strong>Achado Útil:</strong> Encontrou materiais valiosos! Ganhe +2 Sucatas.</td></tr>
-          <tr><th>5</th><td><strong>Mochila Abandonada:</strong> Um sobrevivente deixou para trás! Ganhe +1 Suprimento.</td></tr>
-          <tr><th>6</th><td><strong>Estoque Militar!</strong> Jackpot! Ganhe +1 Munição e +1 Suprimento extras.</td></tr>
-        </table>
-      </div>
-
+    <!-- REGRAS DA FUGA -->
+    <div class="fuga-info glass" style="margin-top: 20px; text-align: center; color: #ccc; border-color: #3b82f6;">
+      <h3 style="color: #3b82f6; font-family: var(--font-title); margin-bottom: 8px; letter-spacing: 1px;">COMO FUGIR?</h3>
+      <p style="font-size: 0.95rem; line-height: 1.5;">
+        Assim que marcar a 6ª caixa do Conserto do Veículo, você estará pronto para <strong>FUGIR</strong>.<br>
+        No final desse turno (ou no início do próximo), role 2 Dados comuns. Você pode gastar Munição para somar <strong>+1 por unidade gasta</strong>.<br>
+        Se o resultado final for <strong style="color: #4ade80;">9 ou maior</strong>, você escapa e <strong>VENCE o jogo!</strong><br>
+        Se falhar, perde 1 Vida. Para tentar de novo, sofra os ataques diários da Horda até conseguir!
+      </p>
     </div>
   </div>
 
