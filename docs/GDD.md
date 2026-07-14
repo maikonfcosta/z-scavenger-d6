@@ -1,5 +1,5 @@
 # Game Design Document (GDD) & Manual de Regras
-## Z-Scavenger: Destino D6
+## 12 Dias: Rota de Fuga
 
 *Um jogo Print and Play (PnP) de alocação de dados e sobrevivência solo.*
 
@@ -17,7 +17,7 @@ Você se encontra preso no coração de uma metrópole em ruínas, cercada por u
 ---
 
 ## 2. Componentes Necessários
-Para jogar *Z-Scavenger: Destino D6*, você precisará de:
+Para jogar *12 Dias: Rota de Fuga*, você precisará de:
 *   **1 Folha de Jogo** impressa (tamanho A4).
 *   **5 Dados D6 comuns** (dados de seis lados).
 *   **1 Dado D6 extra** de cor diferente (para rolar encontros e clima).
@@ -151,3 +151,4 @@ Sempre que resolver uma zona de exploração (Supermercado, Delegacia ou Farmác
 *   **Difícil (Modo Pesadelo):**
     *   *Recursos Iniciais:* Vida = 4, Suprimentos = 1, Infecção = 1.
     *   *Trilha da Horda:* 6 espaços para chegar ao abrigo.
+

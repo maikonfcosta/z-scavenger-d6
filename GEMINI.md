@@ -1,11 +1,11 @@
-# Z-Scavenger: Destino D6 - Contexto e Memória do Projeto
+# 12 Dias: Rota de Fuga - Contexto e Memória do Projeto
 
-Este arquivo serve como repositório de memória, regras de design e aprendizados contínuos para guiar agentes de IA e desenvolvedores que venham a trabalhar no projeto *Z-Scavenger: Destino D6*.
+Este arquivo serve como repositório de memória, regras de design e aprendizados contínuos para guiar agentes de IA e desenvolvedores que venham a trabalhar no projeto *12 Dias: Rota de Fuga*.
 
 ---
 
 ## 🧭 Visão Geral do Jogo
-*   **Título:** Z-Scavenger: Destino D6
+*   **Título:** 12 Dias: Rota de Fuga
 *   **Gênero:** Print & Play (PnP) Solo de Alocação de Dados (Dice Placement) e Sobrevivência Pós-Apocalíptica.
 *   **Objetivo de Vitória:** Consertar o carro na Oficina (Trilha de Conserto) e em seguida passar no Teste de Fuga (Soma > 8).
 *   **Condições de Derrota:**
